@@ -594,6 +594,18 @@ struct mbedtls_ssl_handshake_params
     void (*calc_finished)(mbedtls_ssl_context *, unsigned char *, int);
     mbedtls_ssl_tls_prf_cb *tls_prf;
 
+#if defined(MBEDTLS_SSL_PROTO_TLS1_3_EXPERIMENTAL)
+    /*
+     * State-local variables used during the processing
+     * of a specific handshake state.
+     */
+    union
+    {
+        /* initial dummy variable it should be removed if real value is added */
+        size_t  dummy;
+    } state_local;
+#endif /* MBEDTLS_SSL_PROTO_TLS1_3_EXPERIMENTAL */
+
     mbedtls_ssl_ciphersuite_t const *ciphersuite_info;
 
     size_t pmslen;                      /*!<  premaster length        */
@@ -1322,5 +1334,28 @@ static inline int mbedtls_ssl_conf_is_hybrid_tls12_tls13( const mbedtls_ssl_conf
     return( 0 );
 }
 #endif /* MBEDTLS_SSL_PROTO_TLS1_2 && MBEDTLS_SSL_PROTO_TLS1_3_EXPERIMENTAL*/
+
+#if defined(MBEDTLS_SSL_PROTO_TLS1_3_EXPERIMENTAL)
+
+static inline void mbedtls_ssl_handshake_set_state( mbedtls_ssl_context* ssl,
+    int state )
+{
+    ssl->state = state;
+
+    /* Note:
+     * This only works as long as all state-local struct members
+     * of mbedtls_ssl_hanshake_params::state_local can be initialized
+     * through zeroization.
+     * Exceptions must be manually checked for here.
+     */
+    if (state != MBEDTLS_SSL_HANDSHAKE_WRAPUP &&
+        state != MBEDTLS_SSL_HANDSHAKE_OVER &&
+        state != MBEDTLS_SSL_FLUSH_BUFFERS)
+    {
+        mbedtls_platform_zeroize( &ssl->handshake->state_local, sizeof( ssl->handshake->state_local ) );
+    }
+}
+
+#endif /* MBEDTLS_SSL_PROTO_TLS1_3_EXPERIMENTAL */
 
 #endif /* ssl_misc.h */
