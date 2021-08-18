@@ -99,7 +99,6 @@ static int ssl_client_hello_process( mbedtls_ssl_context* ssl )
 
     MBEDTLS_SSL_PROC_CHK( ssl_client_hello_postprocess, ( ssl ) );
     MBEDTLS_SSL_PROC_CHK( mbedtls_ssl_finish_handshake_msg, ( ssl, buf_len, msg_len ) );
-    mbedtls_ssl_handshake_set_state( ssl, MBEDTLS_SSL_SERVER_HELLO );
 
 cleanup:
 
@@ -146,8 +145,9 @@ static int ssl_client_hello_write_partial( mbedtls_ssl_context* ssl,
 
 static int ssl_client_hello_postprocess( mbedtls_ssl_context* ssl )
 {
-    ((void) ssl);
-    return( MBEDTLS_ERR_SSL_FEATURE_UNAVAILABLE );
+    mbedtls_ssl_handshake_set_state( ssl, MBEDTLS_SSL_SERVER_HELLO );
+
+    return( 0 );
 }
 
 #endif /* MBEDTLS_SSL_CLI_C */
