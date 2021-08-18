@@ -111,8 +111,24 @@ cleanup:
 
 static int ssl_client_hello_prepare( mbedtls_ssl_context* ssl )
 {
-    ((void) ssl);
-    return( MBEDTLS_ERR_SSL_FEATURE_UNAVAILABLE );
+    int ret;
+    size_t rand_bytes_len;
+
+    if( ssl->conf->f_rng == NULL )
+    {
+        MBEDTLS_SSL_DEBUG_MSG( 1, ( "no RNG provided" ) );
+        return( MBEDTLS_ERR_SSL_NO_RNG );
+    }
+
+    rand_bytes_len = 32;
+
+    if( ( ret = ssl->conf->f_rng( ssl->conf->p_rng, ssl->handshake->randbytes, rand_bytes_len ) ) != 0 )
+    {
+        MBEDTLS_SSL_DEBUG_RET( 1, "ssl_generate_random", ret );
+        return( ret );
+    }
+
+    return( 0 );
 }
 
 static int ssl_client_hello_write_partial( mbedtls_ssl_context* ssl,
