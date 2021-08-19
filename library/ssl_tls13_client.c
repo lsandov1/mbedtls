@@ -311,7 +311,7 @@ static int ssl_client_hello_write_partial( mbedtls_ssl_context* ssl,
             continue;
 
         MBEDTLS_SSL_DEBUG_MSG( 3, ( "client hello, add ciphersuite: %04x, %s",
-                                    ciphersuites[i], ciphersuite_info->name ) );
+                                    (unsigned int) ciphersuites[i], ciphersuite_info->name ) );
 
         ciphersuite_count++;
 
