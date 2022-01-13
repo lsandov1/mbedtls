@@ -229,7 +229,7 @@ endif
 
 library/libmbedtls.$(SOEXT_TLS): $(OBJS_TLS) library/libmbedx509.so
 	echo "  LD    $@"
-	$(CC) -shared -Wl,-soname,$@ -o $@ $(OBJS_TLS) -L. -lmbedx509 -lmbedcrypto $(LOCAL_LDFLAGS) $(LDFLAGS)
+	$(CC) -shared -Wl,-soname,$@ -o $@ $(OBJS_TLS) -Llibrary -lmbedx509 -lmbedcrypto $(LOCAL_LDFLAGS) $(LDFLAGS)
 
 library/libmbedtls.so: library/libmbedtls.$(SOEXT_TLS)
 	echo "  LN    $@ -> $<"
@@ -237,11 +237,11 @@ library/libmbedtls.so: library/libmbedtls.$(SOEXT_TLS)
 
 library/libmbedtls.dylib: $(OBJS_TLS) library/libmbedx509.dylib
 	echo "  LD    $@"
-	$(CC) -dynamiclib -o $@ $(OBJS_TLS) -L. -lmbedx509 -lmbedcrypto $(LOCAL_LDFLAGS) $(LDFLAGS)
+	$(CC) -dynamiclib -o $@ $(OBJS_TLS) -Llibrary -lmbedx509 -lmbedcrypto $(LOCAL_LDFLAGS) $(LDFLAGS)
 
 library/libmbedtls.dll: $(OBJS_TLS) library/libmbedx509.dll
 	echo "  LD    $@"
-	$(CC) -shared -Wl,-soname,$@ -Wl,--out-implib,$@.a -o $@ $(OBJS_TLS) -lws2_32 -lwinmm -lgdi32 -L. -lmbedx509 -lmbedcrypto -static-libgcc $(LOCAL_LDFLAGS) $(LDFLAGS)
+	$(CC) -shared -Wl,-soname,$@ -Wl,--out-implib,$@.a -o $@ $(OBJS_TLS) -lws2_32 -lwinmm -lgdi32 -Llibrary -lmbedx509 -lmbedcrypto -static-libgcc $(LOCAL_LDFLAGS) $(LDFLAGS)
 
 # x509
 library/libmbedx509.a: $(OBJS_X509)
@@ -256,7 +256,7 @@ endif
 
 library/libmbedx509.$(SOEXT_X509): $(OBJS_X509) library/libmbedcrypto.so
 	echo "  LD    $@"
-	$(CC) -shared -Wl,-soname,$@ -o $@ $(OBJS_X509) -L. -lmbedcrypto $(LOCAL_LDFLAGS) $(LDFLAGS)
+	$(CC) -shared -Wl,-soname,$@ -o $@ $(OBJS_X509) -Llibrary -lmbedcrypto $(LOCAL_LDFLAGS) $(LDFLAGS)
 
 library/libmbedx509.so: library/libmbedx509.$(SOEXT_X509)
 	echo "  LN    $@ -> $<"
@@ -264,11 +264,11 @@ library/libmbedx509.so: library/libmbedx509.$(SOEXT_X509)
 
 library/libmbedx509.dylib: $(OBJS_X509) library/libmbedcrypto.dylib
 	echo "  LD    $@"
-	$(CC) -dynamiclib -o $@ $(OBJS_X509) -L. -lmbedcrypto  $(LOCAL_LDFLAGS) $(LDFLAGS)
+	$(CC) -dynamiclib -o $@ $(OBJS_X509) -Llibrary -lmbedcrypto  $(LOCAL_LDFLAGS) $(LDFLAGS)
 
 library/libmbedx509.dll: $(OBJS_X509) library/libmbedcrypto.dll
 	echo "  LD    $@"
-	$(CC) -shared -Wl,-soname,$@ -Wl,--out-implib,$@.a -o $@ $(OBJS_X509) -lws2_32 -lwinmm -lgdi32 -L. -lmbedcrypto -static-libgcc $(LOCAL_LDFLAGS) $(LDFLAGS)
+	$(CC) -shared -Wl,-soname,$@ -Wl,--out-implib,$@.a -o $@ $(OBJS_X509) -lws2_32 -lwinmm -lgdi32 -Llibrary -lmbedcrypto -static-libgcc $(LOCAL_LDFLAGS) $(LDFLAGS)
 
 # crypto
 library/libmbedcrypto.a: $(OBJS_CRYPTO)
