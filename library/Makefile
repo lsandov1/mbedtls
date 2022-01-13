@@ -232,8 +232,8 @@ library/libmbedtls.$(SOEXT_TLS): $(OBJS_TLS) library/libmbedx509.so
 	$(CC) -shared -Wl,-soname,$@ -o $@ $(OBJS_TLS) -Llibrary -lmbedx509 -lmbedcrypto $(LOCAL_LDFLAGS) $(LDFLAGS)
 
 library/libmbedtls.so: library/libmbedtls.$(SOEXT_TLS)
-	echo "  LN    $@ -> $<"
-	ln -sf $< $@
+	echo "  LN    $@ -> $(notdir $<)"
+	ln -sf $(notdir $<) $@
 
 library/libmbedtls.dylib: $(OBJS_TLS) library/libmbedx509.dylib
 	echo "  LD    $@"
@@ -259,8 +259,8 @@ library/libmbedx509.$(SOEXT_X509): $(OBJS_X509) library/libmbedcrypto.so
 	$(CC) -shared -Wl,-soname,$@ -o $@ $(OBJS_X509) -Llibrary -lmbedcrypto $(LOCAL_LDFLAGS) $(LDFLAGS)
 
 library/libmbedx509.so: library/libmbedx509.$(SOEXT_X509)
-	echo "  LN    $@ -> $<"
-	ln -sf $< $@
+	echo "  LN    $@ -> $(notdir $<)"
+	ln -sf $(notdir $<) $@
 
 library/libmbedx509.dylib: $(OBJS_X509) library/libmbedcrypto.dylib
 	echo "  LD    $@"
@@ -286,8 +286,8 @@ library/libmbedcrypto.$(SOEXT_CRYPTO): $(OBJS_CRYPTO)
 	$(CC) -shared -Wl,-soname,$@ -o $@ $(OBJS_CRYPTO) $(LOCAL_LDFLAGS) $(LDFLAGS)
 
 library/libmbedcrypto.so: library/libmbedcrypto.$(SOEXT_CRYPTO)
-	echo "  LN    $@ -> $<"
-	ln -sf $< $@
+	echo "  LN    $@ -> $(notdir $<)"
+	ln -sf $(notdir $<) $@
 
 library/libmbedcrypto.dylib: $(OBJS_CRYPTO)
 	echo "  LD    $@"
