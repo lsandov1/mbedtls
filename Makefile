@@ -14,17 +14,12 @@ no_test: programs
 programs: lib mbedtls_test
 	$(MAKE) -C programs
 
-lib:
-	$(MAKE) -C library
-
 tests: lib mbedtls_test
 	$(MAKE) -C tests
 
 mbedtls_test:
 	$(MAKE) -C tests mbedtls_test
 
-library/%:
-	$(MAKE) -C library $*
 programs/%:
 	$(MAKE) -C programs $*
 tests/%:
@@ -109,8 +104,7 @@ ifndef WINDOWS
 
 endif
 
-clean: clean_more_on_top
-	$(MAKE) -C library clean
+clean:: clean_more_on_top
 	$(MAKE) -C programs clean
 	$(MAKE) -C tests clean
 
@@ -119,8 +113,7 @@ ifndef WINDOWS
 	find . \( -name \*.gcno -o -name \*.gcda -o -name \*.info \) -exec rm {} +
 endif
 
-neat: clean_more_on_top
-	$(MAKE) -C library neat
+neat:: clean clean_more_on_top
 	$(MAKE) -C programs neat
 	$(MAKE) -C tests neat
 ifndef WINDOWS
@@ -186,3 +179,5 @@ cscope: cscope.in.out cscope.po.out cscope.out
 cscope.in.out cscope.po.out cscope.out: $(C_SOURCE_FILES)
 	cscope -bq -u -Iinclude -Ilibrary $(patsubst %,-I%,$(wildcard 3rdparty/*/include)) -Itests/include $(C_SOURCE_FILES)
 .PHONY: cscope global
+
+include library/Makefile
