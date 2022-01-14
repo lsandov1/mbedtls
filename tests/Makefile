@@ -217,6 +217,7 @@ libtestdriver1.a:
 	# Copy the library and fake a 3rdparty Makefile include.
 	rm -Rf ./libtestdriver1
 	mkdir ./libtestdriver1
+	cp -f ../Makefile ./libtestdriver1
 	cp -Rf ../library ./libtestdriver1
 	cp -Rf ../include ./libtestdriver1
 	cp -Rf ../scripts ./libtestdriver1
@@ -242,7 +243,7 @@ libtestdriver1.a:
 	perl -pi -e '$(libtestdriver1_rewrite)' ./libtestdriver1/library/*.[ch]
 	perl -pi -e '$(libtestdriver1_rewrite)' ./libtestdriver1/include/*/*.h
 
-	$(MAKE) -C ./libtestdriver1/library CFLAGS="-I../../ $(CFLAGS)" LDFLAGS="$(LDFLAGS)" libmbedcrypto.a
+	$(MAKE) -C ./libtestdriver1/library CFLAGS="-I../ $(CFLAGS)" LDFLAGS="$(LDFLAGS)" libmbedcrypto.a
 	cp ./libtestdriver1/library/libmbedcrypto.a ../library/libtestdriver1.a
 
 ifdef RECORD_PSA_STATUS_COVERAGE_LOG
