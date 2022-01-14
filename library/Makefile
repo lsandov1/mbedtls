@@ -19,7 +19,7 @@ LDFLAGS ?=
 # Note that /library needs to be included explicitly for the sake of library
 # files that are not in the /library directory (which currently means
 # under /3rdparty).
-LOCAL_CFLAGS = $(WARNING_CFLAGS) -Ilibrary -Iinclude -D_FILE_OFFSET_BITS=64
+LOCAL_CFLAGS = $(WARNING_CFLAGS) -I. -I../include -D_FILE_OFFSET_BITS=64
 LOCAL_LDFLAGS =
 
 ifdef DEBUG
@@ -227,9 +227,11 @@ ifneq ($(APPLE_BUILD),0)
 endif
 endif
 
+BUILD_DIR = $(@D)
+
 library/libmbedtls.$(SOEXT_TLS): $(OBJS_TLS) library/libmbedx509.so
 	echo "  LD    $@"
-	$(CC) -shared -Wl,-soname,$(@F) -o $@ $(OBJS_TLS) -Llibrary -lmbedx509 -lmbedcrypto $(LOCAL_LDFLAGS) $(LDFLAGS)
+	cd $(BUILD_DIR) && $(CC) -shared -Wl,-soname,$(@F) -o $(abspath $@) $(abspath $(OBJS_TLS)) -L. -lmbedx509 -lmbedcrypto $(LOCAL_LDFLAGS) $(LDFLAGS)
 
 library/libmbedtls.so: library/libmbedtls.$(SOEXT_TLS)
 	echo "  LN    $@ -> $(<F)"
@@ -237,11 +239,11 @@ library/libmbedtls.so: library/libmbedtls.$(SOEXT_TLS)
 
 library/libmbedtls.dylib: $(OBJS_TLS) library/libmbedx509.dylib
 	echo "  LD    $@"
-	$(CC) -dynamiclib -o $@ $(OBJS_TLS) -Llibrary -lmbedx509 -lmbedcrypto $(LOCAL_LDFLAGS) $(LDFLAGS)
+	cd $(BUILD_DIR) && $(CC) -dynamiclib -o $(abspath $@) $(abspath $(OBJS_TLS)) -L. -lmbedx509 -lmbedcrypto $(LOCAL_LDFLAGS) $(LDFLAGS)
 
 library/libmbedtls.dll: $(OBJS_TLS) library/libmbedx509.dll
 	echo "  LD    $@"
-	$(CC) -shared -Wl,-soname,$(@F) -Wl,--out-implib,$@.a -o $@ $(OBJS_TLS) -lws2_32 -lwinmm -lgdi32 -Llibrary -lmbedx509 -lmbedcrypto -static-libgcc $(LOCAL_LDFLAGS) $(LDFLAGS)
+	cd $(BUILD_DIR) && $(CC) -shared -Wl,-soname,$(@F) -Wl,--out-implib,$(abspath $@).a -o $(abspath $@) $(abspath $(OBJS_TLS)) -lws2_32 -lwinmm -lgdi32 -L. -lmbedx509 -lmbedcrypto -static-libgcc $(LOCAL_LDFLAGS) $(LDFLAGS)
 
 # x509
 library/libmbedx509.a: $(OBJS_X509)
@@ -256,7 +258,7 @@ endif
 
 library/libmbedx509.$(SOEXT_X509): $(OBJS_X509) library/libmbedcrypto.so
 	echo "  LD    $@"
-	$(CC) -shared -Wl,-soname,$(@F) -o $@ $(OBJS_X509) -Llibrary -lmbedcrypto $(LOCAL_LDFLAGS) $(LDFLAGS)
+	cd $(BUILD_DIR) && $(CC) -shared -Wl,-soname,$(@F) -o $(abspath $@) $(abspath $(OBJS_X509)) -L. -lmbedcrypto $(LOCAL_LDFLAGS) $(LDFLAGS)
 
 library/libmbedx509.so: library/libmbedx509.$(SOEXT_X509)
 	echo "  LN    $@ -> $(<F)"
@@ -264,11 +266,11 @@ library/libmbedx509.so: library/libmbedx509.$(SOEXT_X509)
 
 library/libmbedx509.dylib: $(OBJS_X509) library/libmbedcrypto.dylib
 	echo "  LD    $@"
-	$(CC) -dynamiclib -o $@ $(OBJS_X509) -Llibrary -lmbedcrypto  $(LOCAL_LDFLAGS) $(LDFLAGS)
+	cd $(BUILD_DIR) && $(CC) -dynamiclib -o $(abspath $@) $(abspath $(OBJS_X509)) -L. -lmbedcrypto  $(LOCAL_LDFLAGS) $(LDFLAGS)
 
 library/libmbedx509.dll: $(OBJS_X509) library/libmbedcrypto.dll
 	echo "  LD    $@"
-	$(CC) -shared -Wl,-soname,$(@F) -Wl,--out-implib,$@.a -o $@ $(OBJS_X509) -lws2_32 -lwinmm -lgdi32 -Llibrary -lmbedcrypto -static-libgcc $(LOCAL_LDFLAGS) $(LDFLAGS)
+	cd $(BUILD_DIR) && $(CC) -shared -Wl,-soname,$(@F) -Wl,--out-implib,$(abspath $@).a -o $(abspath $@) $(abspath $(OBJS_X509)) -lws2_32 -lwinmm -lgdi32 -L. -lmbedcrypto -static-libgcc $(LOCAL_LDFLAGS) $(LDFLAGS)
 
 # crypto
 library/libmbedcrypto.a: $(OBJS_CRYPTO)
@@ -283,7 +285,7 @@ endif
 
 library/libmbedcrypto.$(SOEXT_CRYPTO): $(OBJS_CRYPTO)
 	echo "  LD    $@"
-	$(CC) -shared -Wl,-soname,$(@F) -o $@ $(OBJS_CRYPTO) $(LOCAL_LDFLAGS) $(LDFLAGS)
+	cd $(BUILD_DIR) && $(CC) -shared -Wl,-soname,$(@F) -o $(abspath $@) $(abspath $(OBJS_CRYPTO)) $(LOCAL_LDFLAGS) $(LDFLAGS)
 
 library/libmbedcrypto.so: library/libmbedcrypto.$(SOEXT_CRYPTO)
 	echo "  LN    $@ -> $(<F)"
@@ -291,15 +293,17 @@ library/libmbedcrypto.so: library/libmbedcrypto.$(SOEXT_CRYPTO)
 
 library/libmbedcrypto.dylib: $(OBJS_CRYPTO)
 	echo "  LD    $@"
-	$(CC) -dynamiclib -o $@ $(OBJS_CRYPTO) $(LOCAL_LDFLAGS) $(LDFLAGS)
+	cd $(BUILD_DIR) && $(CC) -dynamiclib -o $(abspath $@) $(abspath $(OBJS_CRYPTO)) $(LOCAL_LDFLAGS) $(LDFLAGS)
 
 library/libmbedcrypto.dll: $(OBJS_CRYPTO)
 	echo "  LD    $@"
-	$(CC) -shared -Wl,-soname,$(@F) -Wl,--out-implib,$@.a -o $@ $(OBJS_CRYPTO) -lws2_32 -lwinmm -lgdi32 -static-libgcc $(LOCAL_LDFLAGS) $(LDFLAGS)
+	cd $(BUILD_DIR) && $(CC) -shared -Wl,-soname,$(@F) -Wl,--out-implib,$(abspath $@).a -o $(abspath $@) $(abspath $(OBJS_CRYPTO)) -lws2_32 -lwinmm -lgdi32 -static-libgcc $(LOCAL_LDFLAGS) $(LDFLAGS)
 
+
+$(THIRDPARTY_CRYPTO_OBJECTS): BUILD_DIR = library
 .c.o:
 	echo "  CC    $<"
-	$(CC) $(LOCAL_CFLAGS) $(CFLAGS) -o $@ -c $<
+	cd $(BUILD_DIR) && $(CC) $(LOCAL_CFLAGS) $(CFLAGS) -o $(abspath $@) -c $(abspath $<)
 
 .PHONY: library/generated_files
 GENERATED_FILES = \

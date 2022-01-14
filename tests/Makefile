@@ -243,7 +243,7 @@ libtestdriver1.a:
 	perl -pi -e '$(libtestdriver1_rewrite)' ./libtestdriver1/library/*.[ch]
 	perl -pi -e '$(libtestdriver1_rewrite)' ./libtestdriver1/include/*/*.h
 
-	$(MAKE) -C ./libtestdriver1/library CFLAGS="-I../ $(CFLAGS)" LDFLAGS="$(LDFLAGS)" libmbedcrypto.a
+	$(MAKE) -C ./libtestdriver1/library CFLAGS="-I../../ $(CFLAGS)" LDFLAGS="$(LDFLAGS)" libmbedcrypto.a
 	cp ./libtestdriver1/library/libmbedcrypto.a ../library/libtestdriver1.a
 
 ifdef RECORD_PSA_STATUS_COVERAGE_LOG
