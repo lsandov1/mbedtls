@@ -5,10 +5,13 @@
 ifeq ($(words $(MAKEFILE_LIST)),1)
 .SILENT:
 .PHONY: all
+ifeq ($(MAKECMDGOALS),)
+MAKECMDGOALS=all
+endif
 $(filter-out all,$(MAKECMDGOALS)): all
-NOPREFIX=lib shared static clean neat
+NOPREFIX=all shared static clean neat
 all:
-	$(MAKE) -C .. $(filter $(NOPREFIX),$(MAKECMDGOALS)) $(patsubst %,library/%,$(filter-out $(NOPREFIX),$(MAKECMDGOALS)))
+	$(MAKE) -C .. $(patsubst all,lib,$(filter $(NOPREFIX),$(MAKECMDGOALS))) $(patsubst %,library/%,$(filter-out $(NOPREFIX),$(MAKECMDGOALS)))
 else
 
 CFLAGS	?= -O2
