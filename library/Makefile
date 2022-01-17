@@ -9,9 +9,8 @@ ifeq ($(MAKECMDGOALS),)
 MAKECMDGOALS=all
 endif
 $(filter-out all,$(MAKECMDGOALS)): all
-NOPREFIX=all shared static clean neat
 all:
-	$(MAKE) -C .. $(patsubst all,lib,$(filter $(NOPREFIX),$(MAKECMDGOALS))) $(patsubst %,library/%,$(filter-out $(NOPREFIX),$(MAKECMDGOALS)))
+	$(MAKE) -C .. $(patsubst %,library/%,$(MAKECMDGOALS))
 else
 
 CFLAGS	?= -O2
@@ -201,15 +200,16 @@ OBJS_TLS := $(patsubst %,library/%,$(OBJS_TLS))
 
 .PHONY: lib static shared
 
+library/all: lib
 ifndef SHARED
-lib: static
+lib: library/static
 else
-lib: shared static
+lib: library/shared library/static
 endif
 
-static: library/libmbedcrypto.a library/libmbedx509.a library/libmbedtls.a
+library/static: library/libmbedcrypto.a library/libmbedx509.a library/libmbedtls.a
 
-shared: library/libmbedcrypto.$(DLEXT) library/libmbedx509.$(DLEXT) library/libmbedtls.$(DLEXT)
+library/shared: library/libmbedcrypto.$(DLEXT) library/libmbedx509.$(DLEXT) library/libmbedtls.$(DLEXT)
 
 # Windows builds under Mingw can fail if make tries to create archives in the same
 # directory at the same time - see https://bugs.launchpad.net/gcc-arm-embedded/+bug/1848002.
@@ -348,7 +348,7 @@ library/psa_crypto_driver_wrappers.c:
 	echo "  Gen   $@"
 	$(PYTHON) scripts/generate_driver_wrappers.py
 
-clean::
+library/clean:
 ifndef WINDOWS
 	rm -f library/*.o library/libmbed*
 	rm -f $(THIRDPARTY_CRYPTO_OBJECTS)
@@ -356,7 +356,7 @@ else
 	for %%f in (library\*.o library\libmbed* $(subst /,\,$(THIRDPARTY_CRYPTO_OBJECTS))) do if exist %%f del /Q /F %%f
 endif
 
-neat:: clean
+library/neat: library/clean
 ifndef WINDOWS
 	rm -f $(GENERATED_FILES)
 else

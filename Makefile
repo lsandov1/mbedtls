@@ -104,7 +104,7 @@ ifndef WINDOWS
 
 endif
 
-clean:: clean_more_on_top
+clean: library/clean clean_more_on_top
 	$(MAKE) -C programs clean
 	$(MAKE) -C tests clean
 
@@ -113,7 +113,7 @@ ifndef WINDOWS
 	find . \( -name \*.gcno -o -name \*.gcda -o -name \*.info \) -exec rm {} +
 endif
 
-neat:: clean clean_more_on_top
+neat: library/neat clean_more_on_top
 	$(MAKE) -C programs neat
 	$(MAKE) -C tests neat
 ifndef WINDOWS
