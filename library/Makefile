@@ -230,7 +230,8 @@ ifneq ($(APPLE_BUILD),0)
 endif
 endif
 
-BUILD_DIR = $(@D)
+library/%: BUILD_DIR = library
+$(THIRDPARTY_CRYPTO_OBJECTS): BUILD_DIR = library
 
 library/libmbedtls.$(SOEXT_TLS): $(OBJS_TLS) library/libmbedx509.so
 	echo "  LD    $@"
@@ -302,8 +303,6 @@ library/libmbedcrypto.dll: $(OBJS_CRYPTO)
 	echo "  LD    $@"
 	cd $(BUILD_DIR) && $(CC) -shared -Wl,-soname,$(@F) -Wl,--out-implib,$(abspath $@).a -o $(abspath $@) $(abspath $(OBJS_CRYPTO)) -lws2_32 -lwinmm -lgdi32 -static-libgcc $(LOCAL_LDFLAGS) $(LDFLAGS)
 
-
-$(THIRDPARTY_CRYPTO_OBJECTS): BUILD_DIR = library
 .c.o:
 	echo "  CC    $<"
 	cd $(BUILD_DIR) && $(CC) $(LOCAL_CFLAGS) $(CFLAGS) -o $(abspath $@) -c $(abspath $<)
