@@ -55,6 +55,10 @@
 #endif
 #endif /* _WIN32 */
 
+#if defined(MBEDTLS_PK_C) && defined(MBEDTLS_USE_PSA_CRYPTO)
+#define MBEDTLS_PK_WRITE_C
+#endif
+
 #if defined(TARGET_LIKE_MBED) && defined(MBEDTLS_NET_C)
 #error "The NET module is not available for mbed OS - please use the network functions provided by Mbed OS"
 #endif
