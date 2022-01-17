@@ -1,18 +1,6 @@
 
 # Also see "include/mbedtls/mbedtls_config.h"
 
-# If we are the top level Makefile, call the one in the root dir instead
-ifeq ($(words $(MAKEFILE_LIST)),1)
-.SILENT:
-.PHONY: all
-ifeq ($(MAKECMDGOALS),)
-MAKECMDGOALS=all
-endif
-$(filter-out all,$(MAKECMDGOALS)): all
-all:
-	$(MAKE) -C .. $(patsubst %,library/%,$(MAKECMDGOALS))
-else
-
 CFLAGS	?= -O2
 WARNING_CFLAGS ?=  -Wall -Wextra -Wformat=2 -Wno-format-nonliteral
 LDFLAGS ?=
@@ -360,5 +348,4 @@ ifndef WINDOWS
 	rm -f $(GENERATED_FILES)
 else
 	for %%f in ($(subst /,\,$(GENERATED_FILES))) do if exist %%f del /Q /F %%f
-endif
 endif
