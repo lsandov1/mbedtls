@@ -102,7 +102,9 @@ APPS = \
 	pkey/rsa_sign_pss \
 	pkey/rsa_verify \
 	pkey/rsa_verify_pss \
+	psa/aead_cipher_psa \
 	psa/crypto_examples \
+	psa/hmac_md_psa \
 	psa/key_ladder_demo \
 	psa/psa_constant_names \
 	random/gen_entropy \
@@ -283,6 +285,18 @@ pkey/rsa_encrypt$(EXEXT): pkey/rsa_encrypt.c $(DEP)
 	echo "  CC    pkey/rsa_encrypt.c"
 	$(CC) $(LOCAL_CFLAGS) $(CFLAGS) pkey/rsa_encrypt.c    $(LOCAL_LDFLAGS) $(LDFLAGS) -o $@
 
+psa/aead_cipher_psa$(EXEXT): psa/aead_cipher_psa.c $(DEP)
+	echo "  CC    psa/aead_cipher_psa.c"
+	$(CC) $(LOCAL_CFLAGS) $(CFLAGS) psa/aead_cipher_psa.c    $(LOCAL_LDFLAGS) $(LDFLAGS) -o $@
+
+psa/crypto_examples$(EXEXT): psa/crypto_examples.c $(DEP)
+	echo "  CC    psa/crypto_examples.c"
+	$(CC) $(LOCAL_CFLAGS) $(CFLAGS) psa/crypto_examples.c    $(LOCAL_LDFLAGS) $(LDFLAGS) -o $@
+
+psa/hmac_md_psa$(EXEXT): psa/hmac_md_psa.c $(DEP)
+	echo "  CC    psa/hmac_md_psa.c"
+	$(CC) $(LOCAL_CFLAGS) $(CFLAGS) psa/hmac_md_psa.c    $(LOCAL_LDFLAGS) $(LDFLAGS) -o $@
+
 psa/key_ladder_demo$(EXEXT): psa/key_ladder_demo.c $(DEP)
 	echo "  CC    psa/key_ladder_demo.c"
 	$(CC) $(LOCAL_CFLAGS) $(CFLAGS) psa/key_ladder_demo.c    $(LOCAL_LDFLAGS) $(LDFLAGS) -o $@
@@ -426,10 +440,6 @@ x509/load_roots$(EXEXT): x509/load_roots.c $(DEP)
 x509/req_app$(EXEXT): x509/req_app.c $(DEP)
 	echo "  CC    x509/req_app.c"
 	$(CC) $(LOCAL_CFLAGS) $(CFLAGS) x509/req_app.c    $(LOCAL_LDFLAGS) $(LDFLAGS) -o $@
-
-psa/crypto_examples$(EXEXT): psa/crypto_examples.c $(DEP)
-	echo "  CC    psa/crypto_examples.c"
-	$(CC) $(LOCAL_CFLAGS) $(CFLAGS) psa/crypto_examples.c    $(LOCAL_LDFLAGS) $(LDFLAGS) -o $@
 
 clean:
 ifndef WINDOWS
