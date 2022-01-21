@@ -191,7 +191,7 @@ neat: clean
 ifndef WINDOWS
 	rm -f $(GENERATED_FILES)
 else
-	for %f in ($(subst /,\,$(GENERATED_FILES))) if exist %f del /Q /F %f
+	for %%f in ($(subst /,\,$(GENERATED_FILES))) do if exist %%f del /Q /F %%f
 endif
 
 # Test suites caught by SKIP_TEST_SUITES are built but not executed.
@@ -217,6 +217,7 @@ libtestdriver1.a:
 	# Copy the library and fake a 3rdparty Makefile include.
 	rm -Rf ./libtestdriver1
 	mkdir ./libtestdriver1
+	cp -f ../Makefile ./libtestdriver1
 	cp -Rf ../library ./libtestdriver1
 	cp -Rf ../include ./libtestdriver1
 	cp -Rf ../scripts ./libtestdriver1
